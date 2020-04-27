@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 public class ProgramExecuter {
 	public static ArrayList<String>instMem;
+	public static String [] dataMem;
 	public static RegisterFile registerFile;
 	public static String pc;
 	public static int binToDec(String s) {

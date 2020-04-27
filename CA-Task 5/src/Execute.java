@@ -1,10 +1,52 @@
 
 public class Execute {
-	public static String[] execute(String ALUOp, String ALUSrc, String readData1, String readData2, String signExtend,
-			String newPC) {
-		String [] res= new String [5];
-		res[0]=ALUEvaluator(ALUOp, readData1, readData2);
-		return res;
+	public static String ALUres;
+	public static char zeroFlag;
+	public static String branchAddressRes;
+	public static String readData22;
+	public static String newPc;
+
+	public static void execute(String ALUOp, char ALUSrc, String funct, String readData1, String readData2,
+			String signExtend, String newPC) {
+		String op = "";
+		if (ALUOp.equals("10")) {
+
+			switch (funct) {
+			case "100000":
+				op = "0010";
+				break;
+			case "100010":
+				op = "0110";
+				break;
+			case "100100":
+				op = "0000";
+				break;
+			case "100101":
+				op = "0001";
+				break;
+			case "101010":
+				op = "0111";
+				break;
+			}
+
+		}
+		if (ALUOp.equals("00")) {
+			op = "0010";
+		}
+
+		if (ALUOp.equals("10")) {
+			op = "0110";
+		}
+		ALUres = ALUEvaluator(op, readData1, readData2);
+		setZeroFlag();
+		if (zeroFlag == '1' && ALUOp.equals("01")) {
+			branchAddressRes = signExtend;
+			Decode.PCSrc = '1';
+		}
+
+		readData22 = readData2;
+		MemoryAccess.memAccess(ALUres, readData2, signExtend, zeroFlag, branchAddressRes, Decode.memWrite,
+				Decode.memRead, Decode.branch);
 
 	}
 
@@ -83,6 +125,10 @@ public class Execute {
 		String res2 = ProgramExecuter.decToBin(res1);
 		return res2;
 
+	}
+
+	public static void setZeroFlag() {
+		zeroFlag = ALUres.equals("0000000000000000000000000000000") ? '1' : '0';
 	}
 
 }
