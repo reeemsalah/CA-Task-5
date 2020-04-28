@@ -4,13 +4,12 @@ public class Fetch {
 	{
 		 int i=ProgramExecuter.binToDec(pc);
 		 i++;
-		 pc=progCount(pc);
-		 return ProgramExecuter.instMem.get(i);
+		progCount(ProgramExecuter.decToBin(i));
+		 return ProgramExecuter.instMem[i];
 	}
-	public static String progCount(String pc)
+	public static void progCount(String pc)
 	{
-		int i=ProgramExecuter.binToDec(pc)+1;
-		return ProgramExecuter.decToBin(i);
+		ProgramExecuter.pc=pc;
 	}
 
 }

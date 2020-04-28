@@ -3,7 +3,7 @@ public class Execute {
 	public static String ALUres;
 	public static char zeroFlag;
 	public static String branchAddressRes;
-	public static String readData22;
+	public static String readData2;
 	public static String newPc;
 
 	public static void execute(String ALUOp, char ALUSrc, String funct, String readData1, String readData2,
@@ -37,25 +37,35 @@ public class Execute {
 		if (ALUOp.equals("10")) {
 			op = "0110";
 		}
-		ALUres = ALUEvaluator(op, readData1, readData2);
+		String op1=ProgramExecuter.registerFile.readOne(ProgramExecuter.binToDec(readData2));
+		String op2=ProgramExecuter.registerFile.readOne(ProgramExecuter.binToDec(readData2));
+		if(ALUSrc=='0')
+			ALUres = ALUEvaluator(op, op1, op2);
+		else
+			ALUres = ALUEvaluator(op, op1, op2);
+
 		setZeroFlag();
-		if (zeroFlag == '1' && ALUOp.equals("01")) {
+		if (zeroFlag == '1' && Decode.branch=='1') {
 			branchAddressRes = signExtend;
 			Decode.PCSrc = '1';
+			Fetch.progCount(signExtend);
 		}
 
-		readData22 = readData2;
-		MemoryAccess.memAccess(ALUres, readData2, signExtend, zeroFlag, branchAddressRes, Decode.memWrite,
+		Execute.readData2 = readData2;
+			MemoryAccess.memAccess(ALUres, readData2, signExtend, zeroFlag, branchAddressRes, Decode.memWrite,
 				Decode.memRead, Decode.branch);
 
 	}
 
 	/**
 	 * 
-	 * @param Op  the operation code AND 0000 Output = A & B (Bitwise AND); OR 0001
-	 *            Output = A | B (Bitwise OR); add 0010 Output = A + B; sub 0110
-	 *            Output = A - B; slt 0111 Output = (A <B)? 1 : 0; NOR 1100 Output =
-	 *            (A | B) (Bitwise NOR);
+	 * @param Op  the operation code 
+	 * 			  AND 0000 Output = A & B (Bitwise AND); 
+	 *            OR 0001  Output = A | B (Bitwise OR); 
+	 *            add 0010 Output = A + B; 
+	 *            sub 0110 Output = A - B; 
+	 *            slt 0111 Output = (A <B)? 1 : 0; 
+	 *
 	 * 
 	 * @param op1 String as operand 1
 	 * @param op2 String as operand 2
@@ -77,20 +87,15 @@ public class Execute {
 				return sub(n1, n2);
 			case "0111":
 				return slt(n1, n2);
-			case "1100":
-				return nor(n1, n2);
+			case "0000":
+				return and(n1, n2);
 			default:
 				return null;
 			}
 		}
 	}
 
-	private static String nor(int op1, int op2) {
-		int res1 = ~(op1 | op2);
-		String res2 = ProgramExecuter.decToBin(res1);
-		return res2;
-
-	}
+	
 
 	private static String slt(int op1, int op2) {
 		int res1 = (op1 < op2) ? 1 : 0;

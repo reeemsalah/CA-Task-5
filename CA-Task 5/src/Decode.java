@@ -9,19 +9,27 @@ public class Decode {
 		public static char  memToReg;
 		public static char PCSrc;
 		public static String ALUOp;
+		
 		public static String readData1;
 		public static String readData2;
+		public static String writeData;
+
 		public static String funct;
 		public static String signExtend;
-		public static String rd;
-
+		public static String newPC;
 	public static void instDecode(String inst, String newPC)
 	{
 		System.out.println("new PC: "+newPC);
-		decode(inst,newPC);
+		Decode.newPC=newPC;
+		decode(inst);
 		
 	}
-	public static void decode(String s,String newPC) {
+	/**
+	 * 
+	 * @param s
+	
+	 */
+	private static void decode(String s) {
 		String opCode = s.substring(0, 6);
 		int opCodeInt = ProgramExecuter.binToDec(opCode);
 		contUnit(opCodeInt);
@@ -32,34 +40,34 @@ public class Decode {
 			System.out.println("Executing R type.....");
 			ProgramExecuter.registerFile.setWrite(true);
 			decodeR(s);
-			ProgramExecuter.pc=Fetch.progCount(ProgramExecuter.pc);
 		}
 		if (opCodeInt == 35) {
 			// LW instruction
 			System.out.println("Executing LW .....");
 			ProgramExecuter.registerFile.setWrite(true);
-			decodeLWSW(s);
-			ProgramExecuter.pc=Fetch.progCount(ProgramExecuter.pc);
+			decodeI(s);
 		}
 		if (opCodeInt == 43) {
 			// SW instruction
 			System.out.println("Executing SW.....");
 			ProgramExecuter.registerFile.setWrite(false);
-			decodeLWSW(s);
-			ProgramExecuter.pc=Fetch.progCount(ProgramExecuter.pc);
+			decodeI(s);
 		}
 		if (opCodeInt == 4)
 		// BEQ instruction
 		{
 			System.out.println("Executing BEQ.....");
 			ProgramExecuter.registerFile.setWrite(false);
-			decodeBEQ(s);
+			decodeI(s);
 
 		}
 		Execute.execute(opCode, ALUSrc,funct, readData1, readData2, signExtend, newPC);
 		
 	}
-
+	/**
+	 * 
+	 * @param opCodeInt sets the control signals according to the opcode
+	 */
 	private static void contUnit(int opCodeInt) {
 		if (opCodeInt == 0)
 			// R Type instruction
@@ -127,22 +135,12 @@ public class Decode {
 			
 	}
 	
-	private static void decodeBEQ(String s) {
 
-		int rs = ProgramExecuter.binToDec(s.substring(6, 11));
-		int rt = ProgramExecuter.binToDec(s.substring(11, 16));
-		String[] req = ProgramExecuter.registerFile.readTwo(rs, rt);
-		String imm = s.substring(16);
-		if (req[0] == req[1]) {
-			System.out.println("Branching.....");
-			//ProgramExecuter.pc = ProgramExecuter.binToDec(signExtend(imm));
-			ProgramExecuter.pc=Fetch.progCount(ProgramExecuter.pc);
-		} else {
-			System.out.println("Not Branching.....");
-			ProgramExecuter.pc=Fetch.progCount(ProgramExecuter.pc);
-		}
-	}
-
+	/**
+	 * 
+	 * @param s a 16-bit binary representation of a number
+	 * @return 32-bit representation of the number with extended sign
+	 */
 	public static String signExtend(String s) {
 		String sign = s.substring(0, 1);
 
@@ -150,52 +148,48 @@ public class Decode {
 			s = sign + s;
 		return s;
 	}
+	/**
+	 * 
+	 * @param s decodes an I-type instruction following the format:
+	 * opcode	rs     	rt	    IMM
+	   6 bits	5 bits	5 bits	16 bits
+	 */
 
-	private static void decodeLWSW(String s) {
-		int rs = ProgramExecuter.binToDec(s.substring(6, 11));
-		int rt = ProgramExecuter.binToDec(s.substring(11, 16));
-		int imm = ProgramExecuter.binToDec(s.substring(16));
+	private static void decodeI(String s) {
+		readData1= (s.substring(6, 11));
+		readData2 = (s.substring(11, 16));
 		signExtend=signExtend(s.substring(16));
-		Decode.rd=s.substring(11, 16);
-		ProgramExecuter.registerFile.readTwo(rs, rt);
+		Decode.writeData=s.substring(11, 16);
 	}
+	/**
+	 * 
+	 * @param s decodes an R-type instruction following the format:
+	 * opcode	rs	    rt	    rd	    shift (shamt)	funct
+	   6 bits	5 bits	5 bits	5 bits	5 bits	        6 bits
+
+	 */
 
 	private static void decodeR(String s) {
 		funct=s.substring(26);
-		int functCode = ProgramExecuter.binToDec(s.substring(26));
 		System.out.println("funct code:" + funct);
-		int rs = ProgramExecuter.binToDec(s.substring(6, 11));
-		int rt = ProgramExecuter.binToDec(s.substring(11, 16));
-		int rd = ProgramExecuter.binToDec(s.substring(16, 21));
-		String[] req = ProgramExecuter.registerFile.readTwo(rs, rt);
-		String res = "";
-		if (functCode == 32) {
+		readData1 = (s.substring(6, 11));
+		readData2 = (s.substring(11, 16));
+		 writeData  = (s.substring(16, 21));
+	/*	if (functCode == 32) {
 			System.out.println("Executing ADD.....");
-			int tmp = ProgramExecuter.binToDec(req[0]) - ProgramExecuter.binToDec(req[1]);
-			res = ProgramExecuter.decToBin(tmp);
-
 		}
 		if (functCode == 34) {
 			System.out.println("Executing SUB.....");
-			int tmp = ProgramExecuter.binToDec(req[0]) + ProgramExecuter.binToDec(req[1]);
-			res = ProgramExecuter.decToBin(tmp);
 		}
 		if (functCode == 36) {
 			System.out.println("Executing AND.....");
-			int tmp = ProgramExecuter.binToDec(req[0]) + ProgramExecuter.binToDec(req[1]);
-			res = ProgramExecuter.decToBin(tmp);
 		}
 		if (functCode == 37) {
 			System.out.println("Executing OR.....");
-			int tmp = ProgramExecuter.binToDec(req[0]) + ProgramExecuter.binToDec(req[1]);
-			res = ProgramExecuter.decToBin(tmp);
 		}
 		if (functCode == 42) {
 			System.out.println("Executing SLT.....");
-			int tmp = ProgramExecuter.binToDec(req[0]) + ProgramExecuter.binToDec(req[1]);
-			res = ProgramExecuter.decToBin(tmp);
-		}
-		ProgramExecuter.registerFile.write(rd, res);
+		}*/
 
 	}
 

@@ -1,10 +1,11 @@
 import java.util.ArrayList;
 
 public class ProgramExecuter {
-	public static ArrayList<String>instMem;
-	public static String [] dataMem;
+	public static String[]  instMem;
+	public static String[] dataMem;
 	public static RegisterFile registerFile;
 	public static String pc;
+
 	public static int binToDec(String s) {
 		int res = 0;
 		char sign = s.charAt(1);
@@ -63,6 +64,34 @@ public class ProgramExecuter {
 		}
 
 		return res;
+	}
+
+	public static void loadProgram() {
+		// add $1,$2,$3
+		instMem[0] = "00000000010000110000100000100000";
+		// sub $4,$5,$6
+		instMem[1] = "00000000101001100010000000100010";
+		// lw $7,(0)$8
+		instMem[2] = "10001100111010000000000000000000";
+		// sw $9,(0)$10
+		instMem[3] = "10101101001010100000000000000000";
+		// beq $5,$4,16
+		instMem[4] = "00010000100001010000000000000110";
+		// and $11,$12,$13
+		instMem[5] = "00000001100011010101100000100100";
+		// or $14,$15,$16
+		instMem[6] = "00000001111100000111000000100101";
+		// slt $17,$18,$19
+		instMem[7] = "00000010010100111000100000101010";
+		pc=decToBin(0);
+	}
+	public static void startExecution()
+	{
+		for (int i=binToDec(pc);i<instMem.length;i++)
+		{
+			Decode.instDecode(instMem[i],decToBin(i+1));
+			
+		}
 	}
 
 }
