@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+
 
 public class ProgramExecuter {
 	public static String[]  instMem;
@@ -8,15 +8,15 @@ public class ProgramExecuter {
 
 	public static int binToDec(String s) {
 		int res = 0;
-		char sign = s.charAt(1);
 		int power = s.length() - 1;
-		for (int i = 1; i < s.length(); i++) {
-
+		for (int i = 0; i < s.length(); i++) {
+			//System.out.println(res);
 			res += Integer.parseInt(s.substring(i, i + 1)) * (int) (Math.pow(2, power));
+			
 			power--;
 		}
 
-		return sign == '0' ? res : (res * -1);
+		return res;
 	}
 
 	public static String decToBin(int n) {
@@ -75,23 +75,34 @@ public class ProgramExecuter {
 		instMem[2] = "10001100111010000000000000000000";
 		// sw $9,(0)$10
 		instMem[3] = "10101101001010100000000000000000";
-		// beq $5,$4,16
+		/*// beq $5,$4,16
 		instMem[4] = "00010000100001010000000000000110";
 		// and $11,$12,$13
 		instMem[5] = "00000001100011010101100000100100";
 		// or $14,$15,$16
 		instMem[6] = "00000001111100000111000000100101";
 		// slt $17,$18,$19
-		instMem[7] = "00000010010100111000100000101010";
+		instMem[7] = "00000010010100111000100000101010";*/
 		pc=decToBin(0);
 	}
 	public static void startExecution()
 	{
-		for (int i=binToDec(pc);i<instMem.length;i++)
+		int i=binToDec(pc);
+		while (i<instMem.length)
 		{
-			Decode.instDecode(instMem[i],decToBin(i+1));
-			
+			Fetch.instFetch(pc);
+			i=binToDec(pc);
+
 		}
+	}
+	public static void main(String[] args) {
+		instMem=new String [4];
+		dataMem=new String [2];
+		dataMem[0]="00000000000000000000000000000010";
+		dataMem[1]="00000000000000000000000000000001";
+		registerFile=new RegisterFile();
+		loadProgram();
+		startExecution();
 	}
 
 }

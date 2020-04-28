@@ -1,20 +1,27 @@
 public class MemoryAccess {
-
+	public static String ALUres;
+	public static String readData2;
+	public static String writeData;
 	public static void memAccess(String ALUres, String readData2, String signExtend, char zeroFlag,
 			String branchAddressRes, char memWrite, char memRead, char branch)
 
 	{
 		
 		if(Decode.memToReg=='1')
-			ProgramExecuter.registerFile.write(ProgramExecuter.binToDec(Decode.writeData), ALUres);
-		else
-			ProgramExecuter.registerFile.write(ProgramExecuter.binToDec(Decode.writeData), readData2);
-
-		if(memRead=='1')
-		{
-			ProgramExecuter.registerFile.write(ProgramExecuter.binToDec(Decode.readData1), ProgramExecuter.dataMem[ProgramExecuter.binToDec(signExtend)]);
-
+			//ProgramExecuter.registerFile.write(ProgramExecuter.binToDec(Decode.writeData), ALUres);
+			writeData=ALUres;
+		else {
+			if(memRead=='1')
+			{
+				int rs=ProgramExecuter.binToDec(signExtend);
+				writeData=ProgramExecuter.dataMem[rs];
+			}
+			
 		}
+
+		WriteBack.writeBack(ALUres, writeData, Decode.memToReg, Decode.regDst);
+		
+	
 		
 		
 	}

@@ -4,8 +4,14 @@ public class WriteBack {
 
 	public static void writeBack(String ALUres, String readData, char memToReg, char regDst) 
 	{
-		int index =ProgramExecuter.binToDec(ALUres);
-		int rd=ProgramExecuter.binToDec(Decode.writeData);
-		ProgramExecuter.registerFile.write(rd, readData);
+		int rd;
+		if(regDst=='0')
+			rd=ProgramExecuter.binToDec(Decode.rsNo);
+		else
+			rd=ProgramExecuter.binToDec(ALUres);
+		System.out.println("rd: "+rd);
+		ProgramExecuter.registerFile.write(rd, ALUres);
+		ProgramExecuter.registerFile.readOne(rd);
+		
 	}
 }

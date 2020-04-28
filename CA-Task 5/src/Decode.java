@@ -10,9 +10,12 @@ public class Decode {
 		public static char PCSrc;
 		public static String ALUOp;
 		
-		public static String readData1;
-		public static String readData2;
-		public static String writeData;
+		public static String rs;
+		public static String rt;
+		public static String rd;
+		
+		public static String rsNo;
+		
 
 		public static String funct;
 		public static String signExtend;
@@ -26,12 +29,13 @@ public class Decode {
 	}
 	/**
 	 * 
-	 * @param s
+	 * @param s the instruction to be decoded according to the type
 	
 	 */
 	private static void decode(String s) {
 		String opCode = s.substring(0, 6);
 		int opCodeInt = ProgramExecuter.binToDec(opCode);
+		System.out.println("instOPcode: "+opCodeInt);
 		contUnit(opCodeInt);
 		if (opCodeInt == 0)
 		// R Type instruction
@@ -61,7 +65,8 @@ public class Decode {
 			decodeI(s);
 
 		}
-		Execute.execute(opCode, ALUSrc,funct, readData1, readData2, signExtend, newPC);
+
+		Execute.execute(ALUOp, ALUSrc,funct, rs, rt, signExtend, newPC);
 		
 	}
 	/**
@@ -69,6 +74,7 @@ public class Decode {
 	 * @param opCodeInt sets the control signals according to the opcode
 	 */
 	private static void contUnit(int opCodeInt) {
+		System.out.println("Assigning contSignals");
 		if (opCodeInt == 0)
 			// R Type instruction
 			{
@@ -156,10 +162,13 @@ public class Decode {
 	 */
 
 	private static void decodeI(String s) {
-		readData1= (s.substring(6, 11));
-		readData2 = (s.substring(11, 16));
+		int n1=ProgramExecuter.binToDec(s.substring(6, 11));
+		int n2=ProgramExecuter.binToDec(s.substring(11, 16));
+		rsNo=s.substring(6, 11);
+		rs= ProgramExecuter.registerFile.readOne(n1);
+		rt = ProgramExecuter.registerFile.readOne(n2);
 		signExtend=signExtend(s.substring(16));
-		Decode.writeData=s.substring(11, 16);
+
 	}
 	/**
 	 * 
@@ -172,9 +181,11 @@ public class Decode {
 	private static void decodeR(String s) {
 		funct=s.substring(26);
 		System.out.println("funct code:" + funct);
-		readData1 = (s.substring(6, 11));
-		readData2 = (s.substring(11, 16));
-		 writeData  = (s.substring(16, 21));
+		int n1=ProgramExecuter.binToDec(s.substring(6, 11));
+		int n2=ProgramExecuter.binToDec(s.substring(11, 16));
+		rs= ProgramExecuter.registerFile.readOne(n1);
+		rt = ProgramExecuter.registerFile.readOne(n2);
+		rd  = (s.substring(16, 21));
 	/*	if (functCode == 32) {
 			System.out.println("Executing ADD.....");
 		}

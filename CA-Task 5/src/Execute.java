@@ -10,8 +10,8 @@ public class Execute {
 			String signExtend, String newPC) {
 		String op = "";
 		if (ALUOp.equals("10")) {
-
 			switch (funct) {
+			
 			case "100000":
 				op = "0010";
 				break;
@@ -34,16 +34,18 @@ public class Execute {
 			op = "0010";
 		}
 
-		if (ALUOp.equals("10")) {
+		if (ALUOp.equals("01")) {
 			op = "0110";
 		}
-		String op1=ProgramExecuter.registerFile.readOne(ProgramExecuter.binToDec(readData2));
-		String op2=ProgramExecuter.registerFile.readOne(ProgramExecuter.binToDec(readData2));
-		if(ALUSrc=='0')
-			ALUres = ALUEvaluator(op, op1, op2);
-		else
-			ALUres = ALUEvaluator(op, op1, op2);
+		System.out.println("read Data 1: "+readData1);
+		System.out.println("read Data 2: "+readData2);
+		System.out.println("sign extend: "+signExtend);
 
+		if(ALUSrc=='0')
+			ALUres = ALUEvaluator(op, readData1,readData2);
+		else
+			ALUres = ALUEvaluator(op, readData1,signExtend);
+		System.out.println("ALUres: "+ALUres);
 		setZeroFlag();
 		if (zeroFlag == '1' && Decode.branch=='1') {
 			branchAddressRes = signExtend;
@@ -112,6 +114,7 @@ public class Execute {
 	}
 
 	private static String add(int op1, int op2) {
+		System.out.println("ADDing............");
 		int res1 = op1 + op2;
 		String res2 = ProgramExecuter.decToBin(res1);
 		return res2;
