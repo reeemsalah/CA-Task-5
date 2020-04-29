@@ -41,9 +41,9 @@ public class Execute {
 		System.out.println("read Data 2: "+readData2);
 		System.out.println("sign extend: "+signExtend);
 
-		if(ALUSrc=='0')
+		if(ALUSrc=='0')//From register
 			ALUres = ALUEvaluator(op, readData1,readData2);
-		else
+		else//From IMM valueS
 			ALUres = ALUEvaluator(op, readData1,signExtend);
 		System.out.println("ALUres: "+ALUres);
 		setZeroFlag();

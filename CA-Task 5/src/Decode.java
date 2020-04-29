@@ -15,7 +15,8 @@ public class Decode {
 		public static String rd;
 		
 		public static String rsNo;
-		
+		public static String rtNo;
+
 
 		public static String funct;
 		public static String signExtend;
@@ -164,7 +165,8 @@ public class Decode {
 	private static void decodeI(String s) {
 		int n1=ProgramExecuter.binToDec(s.substring(6, 11));
 		int n2=ProgramExecuter.binToDec(s.substring(11, 16));
-		rsNo=s.substring(6, 11);
+		rtNo=s.substring(6, 11);
+		rsNo=s.substring(11, 16);
 		rs= ProgramExecuter.registerFile.readOne(n1);
 		rt = ProgramExecuter.registerFile.readOne(n2);
 		signExtend=signExtend(s.substring(16));
@@ -186,6 +188,8 @@ public class Decode {
 		rs= ProgramExecuter.registerFile.readOne(n1);
 		rt = ProgramExecuter.registerFile.readOne(n2);
 		rd  = (s.substring(16, 21));
+		rsNo=s.substring(6, 11);
+		rtNo=s.substring(11, 16);
 	/*	if (functCode == 32) {
 			System.out.println("Executing ADD.....");
 		}

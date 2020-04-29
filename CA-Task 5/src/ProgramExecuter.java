@@ -72,17 +72,17 @@ public class ProgramExecuter {
 		// sub $4,$5,$6
 		instMem[1] = "00000000101001100010000000100010";
 		// lw $7,(0)$8
-		instMem[2] = "10001100111010000000000000000000";
+		instMem[2] = "10001101000001110000000000000000";
 		// sw $9,(0)$10
-		instMem[3] = "10101101001010100000000000000000";
-		/*// beq $5,$4,16
+		instMem[3] = "10101101010010010000000000000000";
+		// beq $5,$4,16
 		instMem[4] = "00010000100001010000000000000110";
 		// and $11,$12,$13
 		instMem[5] = "00000001100011010101100000100100";
 		// or $14,$15,$16
 		instMem[6] = "00000001111100000111000000100101";
 		// slt $17,$18,$19
-		instMem[7] = "00000010010100111000100000101010";*/
+		instMem[7] = "00000010010100111000100000101010";
 		pc=decToBin(0);
 	}
 	public static void startExecution()
@@ -96,7 +96,7 @@ public class ProgramExecuter {
 		}
 	}
 	public static void main(String[] args) {
-		instMem=new String [4];
+		instMem=new String [8];
 		dataMem=new String [2];
 		dataMem[0]="00000000000000000000000000000010";
 		dataMem[1]="00000000000000000000000000000001";

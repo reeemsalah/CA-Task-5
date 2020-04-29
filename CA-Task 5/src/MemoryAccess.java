@@ -8,12 +8,11 @@ public class MemoryAccess {
 	{
 		
 		if(Decode.memToReg=='1')
-			//ProgramExecuter.registerFile.write(ProgramExecuter.binToDec(Decode.writeData), ALUres);
 			writeData=ALUres;
 		else {
 			if(memRead=='1')
 			{
-				int rs=ProgramExecuter.binToDec(signExtend);
+				int rs=ProgramExecuter.binToDec(ALUres);
 				writeData=ProgramExecuter.dataMem[rs];
 			}
 			

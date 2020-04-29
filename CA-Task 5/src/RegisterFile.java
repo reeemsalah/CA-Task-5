@@ -4,7 +4,7 @@ public class RegisterFile {
 
 	private final String zero="0000000000000000000000000000000";
 	private String [] registers;
-	private boolean write;
+	public boolean write;
 	public RegisterFile()
 	{
 	
@@ -20,7 +20,7 @@ public class RegisterFile {
 		registers[8]="00000000000000000000000000000101";
 		registers[9]="00000000000000000000000000000000";
 		for(int i=10;i<registers.length;i++)
-			registers[i]="0000000000000000000000000000000";
+			registers[i]="00000000000000000000000000000000";
 	}
 	public String [] readTwo(int rs,int rt)
 	{
